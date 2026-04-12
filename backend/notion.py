@@ -16,8 +16,8 @@ async def get_my4_notes() -> list[dict]:
             f"{NOTION_BASE_URL}/databases/{MY4_NOTES_DB}/query",
             headers=_headers(),
             json={
-                "sorts": [{"property": "Priority Score", "direction": "descending"}],
-                "filter": {"property": "Status", "select": {"does_not_equal": "Closed"}},
+                "sorts": [{"property": "Next Follow-up", "direction": "ascending"}],
+                "filter": {"property": "Task Status", "status": {"does_not_equal": "Done"}},
                 "page_size": 50,
             },
             timeout=10,
