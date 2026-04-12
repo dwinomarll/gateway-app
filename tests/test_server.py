@@ -6,6 +6,7 @@ MOCK_HEALTH = {"openclaw": "ok", "n8n": "ok", "shift4": "ok"}
 MOCK_CASES = [{"id": "abc", "properties": {}}]
 MOCK_PAGE = {"id": "abc", "properties": {}}
 MOCK_CHAT = {"choices": [{"message": {"role": "assistant", "content": "Hi"}}]}
+VALID_UUID = "12345678-1234-5678-1234-567812345678"
 
 @pytest.fixture
 def app():
@@ -32,16 +33,16 @@ async def test_notion_feed(app):
 async def test_notion_page(app):
     with patch("backend.server.get_page", new_callable=AsyncMock, return_value=MOCK_PAGE):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            r = await ac.get("/notion/abc-123")
+            r = await ac.get(f"/notion/{VALID_UUID}")
     assert r.status_code == 200
 
 @pytest.mark.asyncio
 async def test_notion_patch(app):
     with patch("backend.server.update_page", new_callable=AsyncMock, return_value=MOCK_PAGE) as mock_update:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            r = await ac.patch("/notion/abc-123", json={"Status": {"select": {"name": "Closed"}}})
+            r = await ac.patch(f"/notion/{VALID_UUID}", json={"Status": {"select": {"name": "Closed"}}})
     assert r.status_code == 200
-    mock_update.assert_called_once_with("abc-123", {"Status": {"select": {"name": "Closed"}}})
+    mock_update.assert_called_once_with(VALID_UUID, {"Status": {"select": {"name": "Closed"}}})
 
 @pytest.mark.asyncio
 async def test_chat_endpoint(app):

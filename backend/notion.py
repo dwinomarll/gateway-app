@@ -1,5 +1,8 @@
 import httpx
+import logging
 from backend.config import get_notion_token, NOTION_BASE_URL, NOTION_API_VERSION, MY4_NOTES_DB
+
+log = logging.getLogger(__name__)
 
 
 def _headers() -> dict:
@@ -23,7 +26,11 @@ async def get_my4_notes() -> list[dict]:
             timeout=10,
         )
         r.raise_for_status()
-        return r.json()["results"]
+        data = r.json()
+        results = data.get("results", [])
+        if data.get("has_more"):
+            log.warning("get_my4_notes: has_more=True, results truncated at %d", len(results))
+        return results
 
 
 async def get_page(page_id: str) -> dict:

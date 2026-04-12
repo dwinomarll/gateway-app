@@ -1,4 +1,4 @@
-import asyncio, logging
+import asyncio, logging, uuid
 from typing import Any
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -52,13 +52,13 @@ async def notion_feed() -> list[dict[str, Any]]:
     return await get_my4_notes()
 
 @app.get("/notion/{page_id}")
-async def notion_page(page_id: str) -> dict[str, Any]:
-    return await get_page(page_id)
+async def notion_page(page_id: uuid.UUID) -> dict[str, Any]:
+    return await get_page(str(page_id))
 
 @app.patch("/notion/{page_id}")
-async def notion_update(page_id: str, properties: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    result = await update_page(page_id, properties)
-    await broadcast({"type": "notion_update", "page_id": page_id, "data": result})
+async def notion_update(page_id: uuid.UUID, properties: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    result = await update_page(str(page_id), properties)
+    await broadcast({"type": "notion_update", "page_id": str(page_id), "data": result})
     return result
 
 @app.post("/chat")

@@ -6,16 +6,23 @@ NOTION_API_VERSION = "2022-06-28"
 NOTION_BASE_URL = "https://api.notion.com/v1"
 MY4_NOTES_DB = "2106ae29-a07c-81dd-a782-c482d020c533"
 
+_notion_token: str | None = None
+
 def get_notion_token() -> str:
+    global _notion_token
+    if _notion_token:
+        return _notion_token
     token = os.environ.get("NOTION_API_TOKEN")
     if token:
-        return token
+        _notion_token = token
+        return _notion_token
     result = subprocess.run(
         ["security", "find-generic-password", "-s", "NOTION_API_TOKEN", "-w"],
         capture_output=True, text=True
     )
     if result.returncode == 0:
-        return result.stdout.strip()
+        _notion_token = result.stdout.strip()
+        return _notion_token
     raise RuntimeError("NOTION_API_TOKEN not found in env or keychain")
 
 OPENCLAW_URL = "http://localhost:18790"

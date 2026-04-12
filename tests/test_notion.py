@@ -19,6 +19,7 @@ async def test_get_my4_notes_returns_list():
         mock_client.post = AsyncMock(return_value=mock_response)
         mock_class.return_value = mock_client
         result = await get_my4_notes()
+        mock_response.raise_for_status.assert_called_once()
     assert isinstance(result, list)
     assert result[0]["id"] == "abc-123"
 
@@ -35,6 +36,7 @@ async def test_get_page_returns_page_dict():
         mock_client.get = AsyncMock(return_value=mock_response)
         mock_class.return_value = mock_client
         result = await get_page("abc-123")
+        mock_response.raise_for_status.assert_called_once()
     assert result["id"] == "abc-123"
 
 @pytest.mark.asyncio
@@ -50,5 +52,6 @@ async def test_update_page_sends_patch():
         mock_client.patch = AsyncMock(return_value=mock_response)
         mock_class.return_value = mock_client
         result = await update_page("abc-123", {"Status": {"select": {"name": "Closed"}}})
+        mock_response.raise_for_status.assert_called_once()
     mock_client.patch.assert_called_once()
     assert "abc-123" in mock_client.patch.call_args[0][0]
