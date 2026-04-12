@@ -7,7 +7,8 @@ MOCK_QUERY_RESPONSE = {"results": [MOCK_PAGE], "has_more": False, "next_cursor":
 
 @pytest.mark.asyncio
 async def test_get_my4_notes_returns_list():
-    with patch("backend.notion.httpx.AsyncClient") as mock_class:
+    with patch("backend.notion.get_notion_token", return_value="test-token"), \
+         patch("backend.notion.httpx.AsyncClient") as mock_class:
         mock_client = AsyncMock()
         mock_client.__aenter__ = AsyncMock(return_value=mock_client)
         mock_client.__aexit__ = AsyncMock(return_value=False)
@@ -23,7 +24,8 @@ async def test_get_my4_notes_returns_list():
 
 @pytest.mark.asyncio
 async def test_get_page_returns_page_dict():
-    with patch("backend.notion.httpx.AsyncClient") as mock_class:
+    with patch("backend.notion.get_notion_token", return_value="test-token"), \
+         patch("backend.notion.httpx.AsyncClient") as mock_class:
         mock_client = AsyncMock()
         mock_client.__aenter__ = AsyncMock(return_value=mock_client)
         mock_client.__aexit__ = AsyncMock(return_value=False)
@@ -37,7 +39,8 @@ async def test_get_page_returns_page_dict():
 
 @pytest.mark.asyncio
 async def test_update_page_sends_patch():
-    with patch("backend.notion.httpx.AsyncClient") as mock_class:
+    with patch("backend.notion.get_notion_token", return_value="test-token"), \
+         patch("backend.notion.httpx.AsyncClient") as mock_class:
         mock_client = AsyncMock()
         mock_client.__aenter__ = AsyncMock(return_value=mock_client)
         mock_client.__aexit__ = AsyncMock(return_value=False)

@@ -16,7 +16,7 @@ def get_notion_token() -> str:
     )
     if result.returncode == 0:
         return result.stdout.strip()
-    return "NOTION_TOKEN_REDACTED"
+    raise RuntimeError("NOTION_API_TOKEN not found in env or keychain")
 
 OPENCLAW_URL = "http://localhost:18790"
 _openclaw_token: str | None = None
