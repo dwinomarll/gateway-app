@@ -1,0 +1,41 @@
+name: GatewayApp
+options:
+  bundleIdPrefix: ai.gateway
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+    SWIFT_STRICT_CONCURRENCY: targeted
+
+targets:
+  GatewayApp:
+    type: application
+    platform: macOS
+    sources:
+      - GatewayApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.gateway.app
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: GatewayApp/Info.plist
+        CODE_SIGN_ENTITLEMENTS: GatewayApp/GatewayApp.entitlements
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+
+  GatewayAppTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - GatewayAppTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.gateway.tests
+    dependencies:
+      - target: GatewayApp
