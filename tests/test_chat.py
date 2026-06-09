@@ -15,7 +15,8 @@ async def test_proxy_chat_returns_completions_response():
         mock_response.raise_for_status = MagicMock()
         mock_client.post = AsyncMock(return_value=mock_response)
         mock_class.return_value = mock_client
-        result = await proxy_chat({"messages": [{"role": "user", "content": "hello"}]})
+        with patch("backend.chat.get_openclaw_token", return_value="test-token"):
+            result = await proxy_chat({"messages": [{"role": "user", "content": "hello"}]})
     assert "choices" in result
     assert result["choices"][0]["message"]["content"] == "Hello paps"
 
